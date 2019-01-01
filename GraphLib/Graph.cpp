@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <limits>
 #include <iostream>
+#include <map>
 
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -242,13 +243,74 @@ TEST:
 Testen Sie diese Funktion, indem Sie einen Graph in main.cpp erstellen
 und sich die kürzesteste Route zwischen 2 Nodes zurückgeben lassen.
 */
-	std::list<Node*>::iterator nodeIt = m_nodes.begin();
-
-	while (nodeIt != m_nodes.end()) {
+	/*
+	std::list<Node*> visited;
+	std::list<Node*> unvisited = m_nodes;
+	std::list<Node*>::iterator nodeIt;
+	while (nodeIt != unvisited.end()) {
 		Node* currentNode = *nodeIt;
 
-		nodeIt++;
+		std::list<Edge*> connectedEdges;
+
+		for (auto edgeIt = m_edges.begin(); edgeIt != m_edges.end(); edgeIt++) {
+			if ((*edgeIt)->isConnectedTo(*currentNode) && &( (*edgeIt)->getSrcNode() ) == &(*currentNode)){
+				connectedEdges.push_back(*edgeIt);
+			}
+		}
 	}
+	*/
+
+	//populate distances with "infinite" value to begin with
+	std::map<Node*, double> distances;
+	std::list<Node*>::iterator nodeIt;
+	while (nodeIt != m_nodes.end()) {
+		//exclude source node
+		if ((*nodeIt) != &rSrcNode) {
+			distances[*nodeIt] = INT_MAX;
+		}
+	}
+
+	//lists to keep track of visited and unvisited nodes
+	std::list<Node*> visited;
+	std::list<Node*> unvisited;
+
+	// give nodes directly connected to the starting node a distance value based on edge weight
+	for (auto edgeIt = m_edges.begin(); edgeIt != m_edges.end(); edgeIt++) {
+		//all edges which have rSrcNode as a source node
+		if ((*edgeIt)->isConnectedTo(rSrcNode) && &((*edgeIt)->getSrcNode()) == &(rSrcNode)) {
+			//assign distances of destination nodes the edge weight
+			distances[&((*edgeIt)->getDstNode())] = (*edgeIt)->getWeight();
+		}
+	}
+
+	while (!visited.empty()) {
+		Node* currentNode = distances.begin()->first;
+
+		//finds node with smallest distance in distances map
+		for (auto it = distances.begin(); it != distances.end(); it++) {
+			//if the distance to the iterator node is smaller than the current node, and it is a member of unvisited
+			if (distances[currentNode] < it->second && std::find(unvisited.begin(), unvisited.end(), it->first) != unvisited.end()) {
+				currentNode = it->first;
+			}
+		}
+
+		for (auto edgeIt = m_edges.begin(); edgeIt != m_edges.end(); edgeIt++) {
+			//finds all edges where the source node is our currentNode
+			if ((*edgeIt)->isConnectedTo(*currentNode) && &((*edgeIt)->getSrcNode()) == &(*currentNode)) {
+				//if the distance of currentNode + edgeweight is smaller than the distance of the destination node, update its distance
+				if (distances[currentNode] + (*edgeIt)->getWeight() < distances[&((*edgeIt)->getDstNode())] ) {
+					distances[&((*edgeIt)->getDstNode())] = distances[currentNode] + (*edgeIt)->getWeight();
+				}
+			}
+		}
+
+		//update lists
+		visited.push_back(currentNode);
+		unvisited.remove(currentNode);
+	}
+	
+
+	
 }
 
 
