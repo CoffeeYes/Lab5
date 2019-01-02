@@ -259,21 +259,22 @@ und sich die kürzesteste Route zwischen 2 Nodes zurückgeben lassen.
 		}
 	}
 	*/
-
+	
 	//populate distances with "infinite" value to begin with
 	std::map<Node*, double> distances;
-	std::list<Node*>::iterator nodeIt;
+	std::list<Node*>::iterator nodeIt = m_nodes.begin();
+	
 	while (nodeIt != m_nodes.end()) {
 		//exclude source node
 		if ((*nodeIt) != &rSrcNode) {
 			distances[*nodeIt] = INT_MAX;
 		}
 	}
-
+	
 	//lists to keep track of visited and unvisited nodes
 	std::list<Node*> visited;
 	std::list<Node*> unvisited;
-
+	
 	// give nodes directly connected to the starting node a distance value based on edge weight
 	for (auto edgeIt = m_edges.begin(); edgeIt != m_edges.end(); edgeIt++) {
 		//all edges which have rSrcNode as a source node
@@ -282,7 +283,7 @@ und sich die kürzesteste Route zwischen 2 Nodes zurückgeben lassen.
 			distances[&((*edgeIt)->getDstNode())] = (*edgeIt)->getWeight();
 		}
 	}
-
+	
 	while (!visited.empty()) {
 		Node* currentNode = distances.begin()->first;
 
@@ -310,6 +311,9 @@ und sich die kürzesteste Route zwischen 2 Nodes zurückgeben lassen.
 	}
 	
 
+	for (auto it2 = distances.begin(); it2 != distances.end(); it2++) {
+		std::cout << it2->first << " " << it2->second << "  |  ";
+	}
 	
 }
 
