@@ -274,11 +274,15 @@ und sich die kürzesteste Route zwischen 2 Nodes zurückgeben lassen.
 			distances[*nodeIt] = INT_MAX;
 			unvisited.push_back(*nodeIt);
 		}
+		else {
+			distances[*nodeIt] = 0;
+			unvisited.push_back(*nodeIt);
+		}
 		nodeIt++;
 	}
 
 	std::cout << unvisited.size();
-	
+	/*
 	// give nodes directly connected to the starting node a distance value based on edge weight
 	for (auto edgeIt = m_edges.begin(); edgeIt != m_edges.end(); edgeIt++) {
 		//all edges which have rSrcNode as a source node
@@ -287,7 +291,7 @@ und sich die kürzesteste Route zwischen 2 Nodes zurückgeben lassen.
 			distances[&((*edgeIt)->getDstNode())] = (*edgeIt)->getWeight();
 		}
 	}
-	
+	*/
 	while (!unvisited.empty()) {
 		//arbibtrarily set currentNode so comparison is possible
 		Node* currentNode = *(unvisited.begin());
@@ -295,7 +299,7 @@ und sich die kürzesteste Route zwischen 2 Nodes zurückgeben lassen.
 		//finds node with smallest distance in distances map and sets currentNode to it
 		for (auto it = distances.begin(); it != distances.end(); it++) {
 			//if the distance to the iterator node is smaller than the current node, and it is a member of unvisited
-			if (distances[currentNode] < it->second && std::find(unvisited.begin(), unvisited.end(), it->first) != unvisited.end()) {
+			if (it->second < distances[currentNode] && std::find(unvisited.begin(), unvisited.end(), it->first) != unvisited.end()) {
 				currentNode = it->first;
 			}
 		}
