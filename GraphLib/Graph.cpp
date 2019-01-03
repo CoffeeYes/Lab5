@@ -263,17 +263,21 @@ und sich die kürzesteste Route zwischen 2 Nodes zurückgeben lassen.
 	//populate distances with "infinite" value to begin with
 	std::map<Node*, double> distances;
 	std::list<Node*>::iterator nodeIt = m_nodes.begin();
+
+	//lists to keep track of visited and unvisited nodes
+	std::list<Node*> visited;
+	std::list<Node*> unvisited;
 	
 	while (nodeIt != m_nodes.end()) {
 		//exclude source node
 		if ((*nodeIt) != &rSrcNode) {
 			distances[*nodeIt] = INT_MAX;
+			unvisited.push_back(*nodeIt);
 		}
+		nodeIt++;
 	}
-	
-	//lists to keep track of visited and unvisited nodes
-	std::list<Node*> visited;
-	std::list<Node*> unvisited;
+
+	std::cout << unvisited.size();
 	
 	// give nodes directly connected to the starting node a distance value based on edge weight
 	for (auto edgeIt = m_edges.begin(); edgeIt != m_edges.end(); edgeIt++) {
@@ -284,10 +288,11 @@ und sich die kürzesteste Route zwischen 2 Nodes zurückgeben lassen.
 		}
 	}
 	
-	while (!visited.empty()) {
-		Node* currentNode = distances.begin()->first;
+	while (!unvisited.empty()) {
+		//arbibtrarily set currentNode so comparison is possible
+		Node* currentNode = *(unvisited.begin());
 
-		//finds node with smallest distance in distances map
+		//finds node with smallest distance in distances map and sets currentNode to it
 		for (auto it = distances.begin(); it != distances.end(); it++) {
 			//if the distance to the iterator node is smaller than the current node, and it is a member of unvisited
 			if (distances[currentNode] < it->second && std::find(unvisited.begin(), unvisited.end(), it->first) != unvisited.end()) {
@@ -306,13 +311,18 @@ und sich die kürzesteste Route zwischen 2 Nodes zurückgeben lassen.
 		}
 
 		//update lists
+
+		for (auto it = distances.begin(); it != distances.end(); it++) {
+			std::cout << "\n " << (it->first)->getID() << " : " << it->second;
+		}
 		visited.push_back(currentNode);
 		unvisited.remove(currentNode);
+		std::cout << "\n unvisited : " << unvisited.size() << std::endl;
 	}
 	
 
 	for (auto it2 = distances.begin(); it2 != distances.end(); it2++) {
-		std::cout << it2->first << " " << it2->second << "  |  ";
+		std::cout << (it2->first)->getID() << " " << it2->second << "  |  "; 
 	}
 	
 }
