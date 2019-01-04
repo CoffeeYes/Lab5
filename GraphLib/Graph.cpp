@@ -184,16 +184,17 @@ std::vector<Edge*> Graph::findEdges(const Node& rSrc, const Node& rDst)
 
     // - findet alle edges, mit rSrc als Source-Node und rDst als Destination-Node.
     // - füge die Zeiger der Edges in den vector 'ret' ein.
-
+	
 	std::list<Edge*>::iterator edgeIt = m_edges.begin();
 
+	
 	while (edgeIt != m_edges.end()) {
-		if (&((*edgeIt)->getSrcNode()) == &rSrc && &((*edgeIt)->getDstNode()) == &rDst) {
+		if ( ( &((*edgeIt)->getSrcNode()) == &rSrc ) && ( &((*edgeIt)->getDstNode()) == &rDst ) ) {
 			ret.push_back(*edgeIt);
 		}
 		edgeIt++;
 	}
-
+	
 	return ret;
     // TEST:
     // Testen Sie die Funktion, indem Sie indem Sie einen Graph mit ein paar Nodes und Edges in main.cpp erstellen
@@ -349,8 +350,9 @@ und sich die kürzesteste Route zwischen 2 Nodes zurückgeben lassen.
 		}
 	}
 
+	//deque for order of node path from srcnode to dstnode
 	std::deque<Node*> outputlist;
-
+	//push dstnode as first node on deque, all other nodes get pushed before it
 	outputlist.push_back(outputNode);
 
 	//iterate from destination node to source node, push each previousnode to the front of the deque so that the correct order path from srcnode to dstnode is produced
@@ -360,12 +362,36 @@ und sich die kürzesteste Route zwischen 2 Nodes zurückgeben lassen.
 		outputNode = addNode;
 	}
 
-	
-
 	std::cout << "\n\n\n";
 
+	//output path from source node to dest node
 	for (auto it = outputlist.begin(); it != outputlist.end(); it++) {
 		std::cout << (*it)->getID() << "->";
+	}
+
+
+	for (auto it = outputlist.begin(); it != outputlist.end()-1; it++) {
+
+		//find edges connected to current node and next node
+		auto nextIt = it + 1;
+		std::vector<Edge*> attachedEdges = findEdges(**it,**(nextIt));
+		
+		Edge* currentEdge = *attachedEdges.begin();
+		//find edge between the two nodes with smallest weight
+		for (auto it2 = attachedEdges.begin(); it2 != attachedEdges.end(); it2++) {
+			if ((*it2)->getWeight() < currentEdge->getWeight()) {
+				currentEdge = *it2;
+			}
+		}
+		
+
+		//add edge to path
+		rPath.push_back(currentEdge);
+	}
+
+	std::cout << "\n\n\n Edge path \n";
+	for (auto it = rPath.begin(); it != rPath.end(); it++) {
+		std::cout << (*it)->toString() << " ";
 	}
 }
 
