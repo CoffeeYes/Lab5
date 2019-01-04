@@ -260,28 +260,35 @@ und sich die kürzesteste Route zwischen 2 Nodes zurückgeben lassen.
 	}
 	*/
 	
-	//populate distances with "infinite" value to begin with
-	std::map<Node*, double> distances;
-	std::list<Node*>::iterator nodeIt = m_nodes.begin();
+	
 
 	//lists to keep track of visited and unvisited nodes
 	std::list<Node*> visited;
 	std::list<Node*> unvisited;
 	
+	//populate distances with "infinite" value to begin with
+	std::map<Node*, double> distances;
+	std::list<Node*>::iterator nodeIt = m_nodes.begin();
+
+	//map to keep track of previous nodes, used at the end to find shortest path to destination node
+	std::map<Node*, Node*> previousNode;
+
 	while (nodeIt != m_nodes.end()) {
-		//exclude source node
+		//give all nodes a value of infinity, except source node which recieves a value of 0
 		if ((*nodeIt) != &rSrcNode) {
 			distances[*nodeIt] = INT_MAX;
-			unvisited.push_back(*nodeIt);
+			previousNode[*nodeIt] = NULL;
 		}
 		else {
 			distances[*nodeIt] = 0;
-			unvisited.push_back(*nodeIt);
 		}
+		unvisited.push_back(*nodeIt);
 		nodeIt++;
 	}
 
-	std::cout << unvisited.size();
+	
+
+
 	/*
 	// give nodes directly connected to the starting node a distance value based on edge weight
 	for (auto edgeIt = m_edges.begin(); edgeIt != m_edges.end(); edgeIt++) {
@@ -310,6 +317,7 @@ und sich die kürzesteste Route zwischen 2 Nodes zurückgeben lassen.
 				//if the distance of currentNode + edgeweight is smaller than the distance of the destination node, update its distance
 				if (distances[currentNode] + (*edgeIt)->getWeight() < distances[&((*edgeIt)->getDstNode())] ) {
 					distances[&((*edgeIt)->getDstNode())] = distances[currentNode] + (*edgeIt)->getWeight();
+					previousNode[&((*edgeIt)->getDstNode())] = currentNode;
 				}
 			}
 		}
@@ -329,6 +337,36 @@ und sich die kürzesteste Route zwischen 2 Nodes zurückgeben lassen.
 		std::cout << (it2->first)->getID() << " " << it2->second << "  |  "; 
 	}
 	
+	for (auto it3 = previousNode.begin(); it3 != previousNode.end(); it3++) {
+		std::cout << (it3->first)->getID() << "->" << (it3->second)->getID() << "  |  ";
+	}
+
+	Node* outputNode = NULL;
+
+	for (auto it = m_nodes.begin(); it != m_nodes.end(); it++) {
+		if (*it == &rDstNode) {
+			outputNode = *it;
+		}
+	}
+
+	std::deque<Node*> outputlist;
+
+	outputlist.push_back(outputNode);
+
+	//iterate from destination node to source node, push each previousnode to the front of the deque so that the correct order path from srcnode to dstnode is produced
+	while (outputNode != &rSrcNode) {
+		Node* addNode = previousNode.find(outputNode)->second;
+		outputlist.push_front(addNode);
+		outputNode = addNode;
+	}
+
+	
+
+	std::cout << "\n\n\n";
+
+	for (auto it = outputlist.begin(); it != outputlist.end(); it++) {
+		std::cout << (*it)->getID() << "->";
+	}
 }
 
 
