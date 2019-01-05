@@ -108,7 +108,9 @@ Graph::~Graph()
 		m_edges.pop_front();
 	}
     // - soll alle Nodes im Graph löschen (delete)
-	std::cout << "\n graph destroyed\n ";
+	while (!m_nodes.empty()) {
+		m_nodes.pop_front();
+	}
 }
 
 
@@ -244,25 +246,7 @@ TEST:
 Testen Sie diese Funktion, indem Sie einen Graph in main.cpp erstellen
 und sich die kürzesteste Route zwischen 2 Nodes zurückgeben lassen.
 */
-	/*
-	std::list<Node*> visited;
-	std::list<Node*> unvisited = m_nodes;
-	std::list<Node*>::iterator nodeIt;
-	while (nodeIt != unvisited.end()) {
-		Node* currentNode = *nodeIt;
-
-		std::list<Edge*> connectedEdges;
-
-		for (auto edgeIt = m_edges.begin(); edgeIt != m_edges.end(); edgeIt++) {
-			if ((*edgeIt)->isConnectedTo(*currentNode) && &( (*edgeIt)->getSrcNode() ) == &(*currentNode)){
-				connectedEdges.push_back(*edgeIt);
-			}
-		}
-	}
-	*/
 	
-	
-
 	//lists to keep track of visited and unvisited nodes
 	std::list<Node*> visited;
 	std::list<Node*> unvisited;
@@ -287,19 +271,6 @@ und sich die kürzesteste Route zwischen 2 Nodes zurückgeben lassen.
 		nodeIt++;
 	}
 
-	
-
-
-	/*
-	// give nodes directly connected to the starting node a distance value based on edge weight
-	for (auto edgeIt = m_edges.begin(); edgeIt != m_edges.end(); edgeIt++) {
-		//all edges which have rSrcNode as a source node
-		if ((*edgeIt)->isConnectedTo(rSrcNode) && &((*edgeIt)->getSrcNode()) == &(rSrcNode)) {
-			//assign distances of destination nodes the edge weight
-			distances[&((*edgeIt)->getDstNode())] = (*edgeIt)->getWeight();
-		}
-	}
-	*/
 	while (!unvisited.empty()) {
 		//arbibtrarily set currentNode so comparison is possible
 		Node* currentNode = *(unvisited.begin());
@@ -333,66 +304,58 @@ und sich die kürzesteste Route zwischen 2 Nodes zurückgeben lassen.
 		std::cout << "\n unvisited : " << unvisited.size() << std::endl;
 	}
 	
-
-	for (auto it2 = distances.begin(); it2 != distances.end(); it2++) {
-		std::cout << (it2->first)->getID() << " " << it2->second << "  |  "; 
-	}
-	
-	for (auto it3 = previousNode.begin(); it3 != previousNode.end(); it3++) {
-		std::cout << (it3->first)->getID() << "->" << (it3->second)->getID() << "  |  ";
-	}
-
+	//set outputnode to destination node, has to be done via iterator because rDstNode is a const node.
 	Node* outputNode = NULL;
-
 	for (auto it = m_nodes.begin(); it != m_nodes.end(); it++) {
 		if (*it == &rDstNode) {
 			outputNode = *it;
 		}
 	}
 
-	//deque for order of node path from srcnode to dstnode
-	std::deque<Node*> outputlist;
-	//push dstnode as first node on deque, all other nodes get pushed before it
-	outputlist.push_back(outputNode);
+	//check if destination node is disconnected from the rest of the path / doesnt have a previousnode
+	if (previousNode.find(outputNode)->second != NULL) {
 
-	//iterate from destination node to source node, push each previousnode to the front of the deque so that the correct order path from srcnode to dstnode is produced
-	while (outputNode != &rSrcNode) {
-		Node* addNode = previousNode.find(outputNode)->second;
-		outputlist.push_front(addNode);
-		outputNode = addNode;
-	}
+		//deque for order of node path from srcnode to dstnode
+		std::deque<Node*> outputlist;
+		//push dstnode as first node on deque, all other nodes get pushed before it
+		outputlist.push_back(outputNode);
 
-	std::cout << "\n\n\n";
-
-	//output path from source node to dest node
-	for (auto it = outputlist.begin(); it != outputlist.end(); it++) {
-		std::cout << (*it)->getID() << "->";
-	}
-
-
-	for (auto it = outputlist.begin(); it != outputlist.end()-1; it++) {
-
-		//find edges connected to current node and next node
-		auto nextIt = it + 1;
-		std::vector<Edge*> attachedEdges = findEdges(**it,**(nextIt));
-		
-		Edge* currentEdge = *attachedEdges.begin();
-		//find edge between the two nodes with smallest weight
-		for (auto it2 = attachedEdges.begin(); it2 != attachedEdges.end(); it2++) {
-			if ((*it2)->getWeight() < currentEdge->getWeight()) {
-				currentEdge = *it2;
-			}
+		//iterate from destination node to source node, push each previousnode to the front of the deque so that the correct order path from srcnode to dstnode is produced
+		while (outputNode != &rSrcNode) {
+			Node* addNode = previousNode.find(outputNode)->second;
+			outputlist.push_front(addNode);
+			outputNode = addNode;
 		}
-		
 
-		//add edge to path
-		rPath.push_back(currentEdge);
-	}
+		std::cout << "\n\n\n";
 
-	std::cout << "\n\n\n Edge path \n";
-	for (auto it = rPath.begin(); it != rPath.end(); it++) {
-		std::cout << (*it)->toString() << " ";
+		//output path from source node to dest node
+		for (auto it = outputlist.begin(); it != outputlist.end(); it++) {
+			std::cout << (*it)->getID() << "->";
+		}
+
+
+		for (auto it = outputlist.begin(); it != outputlist.end() - 1; it++) {
+
+			//find edges connected to current node and next node
+			auto nextIt = it + 1;
+			std::vector<Edge*> attachedEdges = findEdges(**it, **(nextIt));
+
+			Edge* currentEdge = *attachedEdges.begin();
+			//find edge between the two nodes with smallest weight
+			for (auto it2 = attachedEdges.begin(); it2 != attachedEdges.end(); it2++) {
+				if ((*it2)->getWeight() < currentEdge->getWeight()) {
+					currentEdge = *it2;
+				}
+			}
+
+
+			//add edge to path
+			rPath.push_back(currentEdge);
+		}
 	}
+	
+
 }
 
 
