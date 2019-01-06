@@ -118,11 +118,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Lab5.cpp" />
+    <ClCompile Include="Route.cpp" />
+    <ClCompile Include="Taxi.cpp" />
+    <ClCompile Include="UI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Graphlib\Graphlib.vcxproj">
       <Project>{b0b66a6f-6bb1-4300-b032-23260249557f}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Route.h" />
+    <ClInclude Include="Taxi.h" />
+    <ClInclude Include="UI.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

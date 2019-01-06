@@ -102,15 +102,17 @@ Edge& Graph::addEdge(Edge* pNewEdge)
 
 Graph::~Graph()
 {
+	
     // - soll alle Edges im Graph löschen (delete)
 	while (!m_edges.empty()) {
-		delete m_edges.front();
 		m_edges.pop_front();
 	}
     // - soll alle Nodes im Graph löschen (delete)
 	while (!m_nodes.empty()) {
 		m_nodes.pop_front();
+		//man kann auf nodes nicht delete aufrufen weil wir referenzen von nodes verwenden und nicht pointer
 	}
+
 }
 
 
@@ -208,44 +210,7 @@ std::vector<Edge*> Graph::findEdges(const Node& rSrc, const Node& rDst)
 
 void Graph::findShortestPathDijkstra(std::deque<Edge*>& rPath, const Node& rSrcNode, const Node& rDstNode)
 {
-/*
-Ein häufiges Anwendungsproblem für Graphen-Anwendungen besteht darin, 
-den Pfad zwischen verschiedenen Nodes zu finden, die direkt oder indirekt über Edges miteinander verbunden sind.
-Um den optimalsten Pfad(den mit den geringsten Kantengewichten) zu finden, gibt es den Dijkstra-Algorithmus!
-Pseudocode (Quelle: https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm)
->>>
-function Dijkstra(Graph, source):
-
-      create vertex set Q
-
-      for each vertex v in Graph:             // Initialization
-          dist[v] ← INFINITY                  // Unknown distance from source to v
-          prev[v] ← UNDEFINED                 // Previous node in optimal path from source
-          add v to Q                          // All nodes initially in Q (unvisited nodes)
-
-      dist[source] ← 0                        // Distance from source to source
-
-      while Q is not empty:
-          u ← vertex in Q with min dist[u]    // Source node will be selected first
-          remove u from Q
-
-          for each neighbor v of u:           // where v is still in Q.
-              alt ← dist[u] + length(u, v)
-              if alt < dist[v]:               // A shorter path to v has been found
-                  dist[v] ← alt
-                  prev[v] ← u
-
-      return dist[], prev[]
-<<<
-
-Betrachten Sie den Pseudocode und setzen Sie ihn in C++ um.
-Sortieren Sie am Ende das Ergebnis in die richtige Reihenfolge um 
-und geben sie die kürzeste Route zwischen rSrcNode und rDstNode als Liste von Edges zurück.
-
-TEST:
-Testen Sie diese Funktion, indem Sie einen Graph in main.cpp erstellen
-und sich die kürzesteste Route zwischen 2 Nodes zurückgeben lassen.
-*/
+	//Quelle: https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm)
 	
 	//lists to keep track of visited and unvisited nodes
 	std::list<Node*> visited;
@@ -295,13 +260,8 @@ und sich die kürzesteste Route zwischen 2 Nodes zurückgeben lassen.
 		}
 
 		//update lists
-
-		for (auto it = distances.begin(); it != distances.end(); it++) {
-			std::cout << "\n " << (it->first)->getID() << " : " << it->second;
-		}
 		visited.push_back(currentNode);
 		unvisited.remove(currentNode);
-		std::cout << "\n unvisited : " << unvisited.size() << std::endl;
 	}
 	
 	//set outputnode to destination node, has to be done via iterator because rDstNode is a const node.
@@ -326,14 +286,6 @@ und sich die kürzesteste Route zwischen 2 Nodes zurückgeben lassen.
 			outputlist.push_front(addNode);
 			outputNode = addNode;
 		}
-
-		std::cout << "\n\n\n";
-
-		//output path from source node to dest node
-		for (auto it = outputlist.begin(); it != outputlist.end(); it++) {
-			std::cout << (*it)->getID() << "->";
-		}
-
 
 		for (auto it = outputlist.begin(); it != outputlist.end() - 1; it++) {
 
