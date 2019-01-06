@@ -15,7 +15,7 @@ void UI::printTaxi(Taxi eingabe) {
 	std::cout << eingabe.getState() << std::endl;
 }
 
-void UI::chooseOption(Taxi &taxi1, Taxi &taxi2) {
+void UI::chooseOption(Taxi &taxi1, Taxi &taxi2,std::list<Node*> nodeList,Graph inputGraph) {
 	int option = 0;
 	int taxiChoice = 0;
 	Taxi *usingTaxi;
@@ -63,9 +63,60 @@ void UI::chooseOption(Taxi &taxi1, Taxi &taxi2) {
 		//fahrt mit gaeste
 	case 1:
 	{
-		double distanz;
-		std::cout << "Wie weit ist die fahrt?\n";
-		std::cin >> distanz;
+		double distanz = 0;
+
+		//initialise input choice variables
+		int sourceChoice;
+		int destChoice;
+		int choiceCounter;
+
+		//allow user to choose starting node from list
+		std::cout << "wo fangen sie an? \n\n";
+		choiceCounter = 1;
+		for (auto it = nodeList.begin(); it != nodeList.end(); it++) {
+			std::cout << choiceCounter << "." << (*it)->getID() << "\n";
+			choiceCounter++;
+		}
+		std::cin >> sourceChoice;
+
+		//allow user to use destination node from list
+		std::cout << "wo moechten sie hin? \n\n";
+		choiceCounter = 1;
+		for (auto it = nodeList.begin(); it != nodeList.end(); it++) {
+			std::cout << choiceCounter << "." << (*it)->getID() << "\n";
+			choiceCounter++;
+		}
+		std::cin >> destChoice;
+
+		//find source node based on user choice
+		std::list<Node*>::iterator nodeIt;
+		nodeIt = nodeList.begin();
+		int counter = 1;
+		while (counter < sourceChoice) {
+			nodeIt++;
+			counter++;
+		}
+		Node* sourceNode = *nodeIt;
+
+		//find destination node based on user input
+		nodeIt = nodeList.begin();
+		counter = 1;
+		while (counter < destChoice) {
+			nodeIt++;
+			counter++;
+		}
+		Node* destNode = *nodeIt;
+
+		//find shortest path and save it
+		std::deque<Edge*> path;
+		inputGraph.findShortestPathDijkstra(path, *sourceNode, *destNode);
+
+		//output path and calculate distanz travelled
+		for (auto it = path.begin(); it != path.end(); it++) {
+			std::cout << (*it)->toString() << " ";
+			distanz = distanz + (*it)->getWeight();
+		}
+
 		usingTaxi->bookTrip(distanz, true);
 		break;
 	}

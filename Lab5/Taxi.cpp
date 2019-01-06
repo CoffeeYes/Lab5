@@ -18,7 +18,7 @@ Taxi::Taxi()
 
 	m_geldBilanz = 0;
 	m_tagesKilometer = 0;
-	m_tankinhalt = 0;
+	m_tankinhalt = 50;
 
 	//Taxi name mit counter am ende setzen
 	std::stringstream taxi_id;
