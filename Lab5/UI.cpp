@@ -79,6 +79,23 @@ void UI::chooseOption(Taxi &taxi1, Taxi &taxi2,std::list<Node*> nodeList,Graph i
 		}
 		std::cin >> sourceChoice;
 
+		//loop for erroneous input
+		while (!(sourceChoice <= nodeList.size() && sourceChoice > 0)) {
+
+			std::cin.clear();
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+			std::cout << "\n\n Fehler : sie haben keine gultige eingabe gemacht\n\n";
+			std::cout << "wo fangen sie an? \n\n";
+			choiceCounter = 1;
+			for (auto it = nodeList.begin(); it != nodeList.end(); it++) {
+				std::cout << choiceCounter << "." << (*it)->getID() << "\n";
+				choiceCounter++;
+			}
+			std::cin >> sourceChoice;
+		}
+
+
 		//allow user to use destination node from list
 		std::cout << "wo moechten sie hin? \n\n";
 		choiceCounter = 1;
@@ -87,6 +104,22 @@ void UI::chooseOption(Taxi &taxi1, Taxi &taxi2,std::list<Node*> nodeList,Graph i
 			choiceCounter++;
 		}
 		std::cin >> destChoice;
+
+		//loop for erroneous input
+		while (!(destChoice <= nodeList.size() && destChoice > 0)) {
+
+			std::cin.clear();
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+			std::cout << "\n\n Fehler : sie haben keine gultige eingabe gemacht\n\n";
+			std::cout << "wo fangen sie an? \n\n";
+			choiceCounter = 1;
+			for (auto it = nodeList.begin(); it != nodeList.end(); it++) {
+				std::cout << choiceCounter << "." << (*it)->getID() << "\n";
+				choiceCounter++;
+			}
+			std::cin >> destChoice;
+		}
 
 		//find source node based on user choice
 		std::list<Node*>::iterator nodeIt;
@@ -145,6 +178,22 @@ void UI::chooseOption(Taxi &taxi1, Taxi &taxi2,std::list<Node*> nodeList,Graph i
 		}
 		std::cin >> sourceChoice;
 
+		//loop for erroneous input
+		while (!(sourceChoice <= nodeList.size() && sourceChoice > 0)) {
+
+			std::cin.clear();
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+			std::cout << "\n\n Fehler : sie haben keine gultige eingabe gemacht\n\n";
+			std::cout << "wo fangen sie an? \n\n";
+			choiceCounter = 1;
+			for (auto it = nodeList.begin(); it != nodeList.end(); it++) {
+				std::cout << choiceCounter << "." << (*it)->getID() << "\n";
+				choiceCounter++;
+			}
+			std::cin >> sourceChoice;
+		}
+
 		//allow user to use destination node from list
 		std::cout << "wo moechten sie hin? \n\n";
 		choiceCounter = 1;
@@ -153,6 +202,22 @@ void UI::chooseOption(Taxi &taxi1, Taxi &taxi2,std::list<Node*> nodeList,Graph i
 			choiceCounter++;
 		}
 		std::cin >> destChoice;
+
+		//loop for erroneous input
+		while (!(destChoice <= nodeList.size() && destChoice > 0)) {
+
+			std::cin.clear();
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+			std::cout << "\n\n Fehler : sie haben keine gultige eingabe gemacht\n\n";
+			std::cout << "wo fangen sie an? \n\n";
+			choiceCounter = 1;
+			for (auto it = nodeList.begin(); it != nodeList.end(); it++) {
+				std::cout << choiceCounter << "." << (*it)->getID() << "\n";
+				choiceCounter++;
+			}
+			std::cin >> destChoice;
+		}
 
 		//find source node based on user choice
 		std::list<Node*>::iterator nodeIt;
