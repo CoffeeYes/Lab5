@@ -111,22 +111,87 @@ void UI::chooseOption(Taxi &taxi1, Taxi &taxi2,std::list<Node*> nodeList,Graph i
 		std::deque<Edge*> path;
 		inputGraph.findShortestPathDijkstra(path, *sourceNode, *destNode);
 
-		//output path and calculate distanz travelled
-		for (auto it = path.begin(); it != path.end(); it++) {
-			std::cout << (*it)->toString() << " ";
-			distanz = distanz + (*it)->getWeight();
+		if (path.size() >= 1) {
+			//output path and calculate distanz travelled
+			for (auto it = path.begin(); it != path.end(); it++) {
+				std::cout << (*it)->toString() << " (" << (*it)->getWeight() << "km)  | ";
+				distanz = distanz + (*it)->getWeight();
+			}
+			std::cout << "Gesamt : " << distanz << "km";
+			std::cout << std::endl;
+			usingTaxi->bookTrip(distanz, true);
 		}
-
-		usingTaxi->bookTrip(distanz, true);
+		else {
+			std::cout << "es gibt keinen weg von diesem startpunkt zu dem ausgewaehltem Ziel \n";
+		}
 		break;
 	}
 	//fahrt ohne gaeste
 	case 2:
 	{
-		double distanz;
-		std::cout << "Wie weit ist die fahrt?\n";
-		std::cin >> distanz;
-		usingTaxi->bookTrip(distanz, false);
+		double distanz = 0;
+
+		//initialise input choice variables
+		int sourceChoice;
+		int destChoice;
+		int choiceCounter;
+
+		//allow user to choose starting node from list
+		std::cout << "wo fangen sie an? \n\n";
+		choiceCounter = 1;
+		for (auto it = nodeList.begin(); it != nodeList.end(); it++) {
+			std::cout << choiceCounter << "." << (*it)->getID() << "\n";
+			choiceCounter++;
+		}
+		std::cin >> sourceChoice;
+
+		//allow user to use destination node from list
+		std::cout << "wo moechten sie hin? \n\n";
+		choiceCounter = 1;
+		for (auto it = nodeList.begin(); it != nodeList.end(); it++) {
+			std::cout << choiceCounter << "." << (*it)->getID() << "\n";
+			choiceCounter++;
+		}
+		std::cin >> destChoice;
+
+		//find source node based on user choice
+		std::list<Node*>::iterator nodeIt;
+		nodeIt = nodeList.begin();
+		int counter = 1;
+		while (counter < sourceChoice) {
+			nodeIt++;
+			counter++;
+		}
+		Node* sourceNode = *nodeIt;
+
+		//find destination node based on user input
+		nodeIt = nodeList.begin();
+		counter = 1;
+		while (counter < destChoice) {
+			nodeIt++;
+			counter++;
+		}
+		Node* destNode = *nodeIt;
+
+		//find shortest path and save it
+		std::deque<Edge*> path;
+		inputGraph.findShortestPathDijkstra(path, *sourceNode, *destNode);
+
+		//if a path was found
+		if (path.size() >= 1) {
+			//output path and calculate distanz travelled
+			for (auto it = path.begin(); it != path.end(); it++) {
+				std::cout << (*it)->toString() << " (" << (*it)->getWeight() << "km)  | ";
+				distanz = distanz + (*it)->getWeight();
+			}
+			std::cout << "Gesamt : " << distanz << "km";
+			std::cout << std::endl;
+			//book the trip with the total distance, this funktion handles tank check and error if not enough fuel is available
+			usingTaxi->bookTrip(distanz, false);
+		}
+		else {
+			std::cout << "es gibt keinen weg von diesem startpunkt zu dem ausgewaehltem Ziel \n";
+		}
 		break;
 	}
 	//tanken
