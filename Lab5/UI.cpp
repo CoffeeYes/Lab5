@@ -15,7 +15,7 @@ void UI::printTaxi(Taxi eingabe) {
 	std::cout << eingabe.getState() << std::endl;
 }
 
-void UI::chooseOption(Taxi &taxi1, Taxi &taxi2,std::list<Node*> nodeList,Graph inputGraph) {
+void UI::chooseOption(Taxi &taxi1, Taxi &taxi2,Graph inputGraph) {
 	int option = 0;
 	int taxiChoice = 0;
 	Taxi *usingTaxi;
@@ -73,6 +73,7 @@ void UI::chooseOption(Taxi &taxi1, Taxi &taxi2,std::list<Node*> nodeList,Graph i
 		//allow user to choose starting node from list
 		std::cout << "wo fangen sie an? \n\n";
 		choiceCounter = 1;
+		std::list<Node*> nodeList = inputGraph.getNodes();
 		for (auto it = nodeList.begin(); it != nodeList.end(); it++) {
 			std::cout << choiceCounter << "." << (*it)->getID() << "\n";
 			choiceCounter++;
@@ -168,6 +169,7 @@ void UI::chooseOption(Taxi &taxi1, Taxi &taxi2,std::list<Node*> nodeList,Graph i
 		int sourceChoice;
 		int destChoice;
 		int choiceCounter;
+		std::list<Node*> nodeList = inputGraph.getNodes();
 
 		//allow user to choose starting node from list
 		std::cout << "wo fangen sie an? \n\n";
