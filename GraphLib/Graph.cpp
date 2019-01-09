@@ -134,7 +134,9 @@ void Graph::remove(Node& rNode)
 			delete *edgeIt;
 			edgeIt = m_edges.erase(edgeIt);
 		}
-		edgeIt++;
+		else {
+			edgeIt++;
+		}
 	}
 
 	std::list<Node*>::iterator nodeIt;
@@ -143,7 +145,9 @@ void Graph::remove(Node& rNode)
 		if (*nodeIt == &rNode) {
 			nodeIt = m_nodes.erase(nodeIt);
 		}
-		nodeIt++;
+		else {
+			nodeIt++;
+		}
 	}
     // TEST:
     // Testen Sie die Funktion, indem Sie indem Sie einen Graph mit ein paar Nodes und Edges in main.cpp erstellen
