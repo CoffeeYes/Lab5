@@ -130,7 +130,7 @@ void Graph::remove(Node& rNode)
 	edgeIt = m_edges.begin();
 	//alle edges loschen die mit rNode verbunden sind
 	while (edgeIt != m_edges.end()) {
-		if (&((*edgeIt)->getDstNode()) == &rNode || &((*edgeIt)->getSrcNode()) == &rNode) {
+		if ((*edgeIt)->isConnectedTo(rNode)) {
 			delete *edgeIt;
 			edgeIt = m_edges.erase(edgeIt);
 		}
