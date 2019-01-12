@@ -147,12 +147,14 @@ void UI::chooseOption(Taxi &taxi1, Taxi &taxi2,Graph inputGraph) {
 
 		if (path.size() >= 1) {
 			//output path and calculate distanz travelled
+			std::cout << "\n";
 			for (auto it = path.begin(); it != path.end(); it++) {
 				std::cout << (*it)->toString() << " (" << (*it)->getWeight() << "km)  | ";
 				distanz = distanz + (*it)->getWeight();
 			}
 			std::cout << "Gesamt : " << distanz << "km";
-			std::cout << std::endl;
+			std::cout << "\n\n";
+			//book the trip with the total distance, this funktion handles tank check and error if not enough fuel is available
 			usingTaxi->bookTrip(distanz, true);
 		}
 		else {
@@ -247,17 +249,18 @@ void UI::chooseOption(Taxi &taxi1, Taxi &taxi2,Graph inputGraph) {
 		//if a path was found
 		if (path.size() >= 1) {
 			//output path and calculate distanz travelled
+			std::cout << "\n";
 			for (auto it = path.begin(); it != path.end(); it++) {
 				std::cout << (*it)->toString() << " (" << (*it)->getWeight() << "km)  | ";
 				distanz = distanz + (*it)->getWeight();
 			}
 			std::cout << "Gesamt : " << distanz << "km";
-			std::cout << std::endl;
+			std::cout << "\n\n";
 			//book the trip with the total distance, this funktion handles tank check and error if not enough fuel is available
 			usingTaxi->bookTrip(distanz, false);
 		}
 		else {
-			std::cout << "es gibt keinen weg von diesem startpunkt zu dem ausgewaehltem Ziel \n";
+			std::cout << "\n es gibt keinen weg von diesem startpunkt zu dem ausgewaehltem Ziel \n";
 		}
 		break;
 	}
