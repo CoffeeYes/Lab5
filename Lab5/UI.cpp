@@ -268,15 +268,17 @@ void UI::chooseOption(Taxi &taxi1, Taxi &taxi2,Graph inputGraph) {
 		std::cin >> preis;
 		usingTaxi->fillUp(preis);
 		break;
-		//taxi ausgeben
+	//taxi ausgeben
 	case 4:
 		this->printTaxi(*usingTaxi);
 		break;
-		//programm beenden
+	//programm beenden
 	case 5:
 		exit(0);
 		delete &taxi1;
 		delete &taxi2;
+		break;
+	default:
 		break;
 	}
 }

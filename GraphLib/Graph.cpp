@@ -11,12 +11,9 @@
 
 Node* Graph::findNode(const std::string& id)
 {
-    // - soll einen Node mit der gegebenen id in m_nodes suchen
-    // - gibt den Pointer auf den Node zurück, wenn er gefunden wurde.
-    // - gibt NULL zurück, falls kein Node mit der id gefunden wurde.
-
 	std::list<Node*>::iterator nodeIt;
 
+	//check if node with matching id is found in the list and return it if so
 	for (nodeIt = m_nodes.begin(); nodeIt != m_nodes.end(); nodeIt++) {
 		std::string current_id = (*nodeIt)->getID();
 
@@ -24,12 +21,8 @@ Node* Graph::findNode(const std::string& id)
 			return *nodeIt;
 		}
 	}
+	//if no node is found return null
     return NULL;
-
-    // TEST:
-    // Testen Sie die Funktion, indem Sie indem Sie einen Graph mit ein paar Nodes und Edges in main.cpp erstellen
-    // und anschließend ein paar Nodes im Graph suchen.
-    // Prüfen Sie, ob der Node gefunden wurden und geben Sie die ID auf der Kommandozeile aus!
 }
 
 
@@ -37,30 +30,17 @@ Node* Graph::findNode(const std::string& id)
 
 Node& Graph::addNode(Node* pNewNode)
 {
-    // bitte diese Zeile entfernen, wenn Sie die Funktion implementieren:
-    //return *new Node("");
-
+	//check if node is found in list
 	if (findNode(pNewNode->getID()) != NULL) {
 		std::string error("Ein knoten mit diesem bezeichner existiert schon im Graph");
 		throw error;
 	}
 	else {
-		//node hinten in der liste einfugen
+		//insert node at the back of the list
 		m_nodes.push_back(pNewNode);
-		//referenze auf node aus liste zuruckgeben
+		//return reference to node from the back of the list
 		return *(m_nodes.back());
 	}
-
-    // Überprüfen Sie, ob schon ein Node mit der gegeben id im Graph vorhanden ist!
-    // Falls ja:
-    //  - Exception werfen
-    // Falls nein:
-    //  - den neuen Node 'pNewNode' in m_nodes einfügen
-    //  - Referenz auf den neuen Node zurück geben
-
-    // TEST:
-    // Testen Sie die Funktion, indem Sie indem Sie einen Graph mit ein paar Nodes in main.cpp erstellen
-    // Testen Sie mit der Funktion 'findNode', ob die hinzugefügten Nodes im Graph vorhanden sind.
 }
 
 
@@ -68,32 +48,19 @@ Node& Graph::addNode(Node* pNewNode)
 
 Edge& Graph::addEdge(Edge* pNewEdge)
 {
-    // bitte diese Zeile entfernen, wenn Sie die Funktion implementieren:
-    //return *new Edge(*new Node(), *new Node());
-
-    // - die neue Edge 'pNewEdge' in m_edges einfügen
+    // add edge to m_edges
 	m_edges.push_back(pNewEdge);
 
-
-	// - Testen Sie ob der Source- und Destination-Node von 'pNewEdge' schon im Graph vorhanden ist.
-	// -> fügen Sie diese Nodes hinzu, falls nicht (nutzen Sie dafür Graph::addNode)
-	
+	//check if nodes connected to pNewEdge exist in graph, if not add them
 	 if (findNode(pNewEdge->getSrcNode().getID()) == NULL) {
-		//node einfugen
 		Node* nodeptr = &(pNewEdge->getSrcNode());
-		addNode(&pNewEdge->getSrcNode());
+		addNode(nodeptr);
 	}
-
 	 if (findNode(pNewEdge->getDstNode().getID()) == NULL) {
 		 Node* nodeptr = &(pNewEdge->getDstNode());
 		 addNode(nodeptr);
 	 }
-    // TEST:
-    // Testen Sie die Funktion, indem Sie indem Sie einen Graph mit ein paar Nodes und Edges in main.cpp erstellen
-    // Testen Sie mit der Funktion 'findEdges', ob die hinzugefügten Edges im Graph vorhanden sind.
-
-
-	 // - Referenz auf die neue Edge zurück geben
+	 // return reference to new edge
 	 return *m_edges.back();
 }
 
@@ -107,10 +74,13 @@ Graph::~Graph()
 	while (!m_edges.empty()) {
 		m_edges.pop_front();
 	}
-    // - soll alle Nodes im Graph löschen (delete)
+
+    // - soll alle Nodes im Graph löschen (delete) FALSCH
 	while (!m_nodes.empty()) {
 		m_nodes.pop_front();
-		//man kann auf nodes nicht delete aufrufen weil wir referenzen von nodes verwenden und nicht pointer
+		/*man kann auf nodes nicht delete aufrufen weil wir referenzen von nodes zulassen,
+		also konnen wir nicht garantieren dass die eingabe nodes dynamisch erstellt wurden
+		bzw. ein dereferenzierter pointer ubergeben wurde*/
 	}
 
 }
@@ -120,15 +90,10 @@ Graph::~Graph()
 
 void Graph::remove(Node& rNode)
 {
-    // - alle Edges, die mit rNode verbunden sind, müssen entfernt werden!
-	// - finden sie den Pointer mit der Adresse von 'rNode' in m_nodes.
-    // 		- der Pointer auf rNode soll aus m_nodes entfernt werden!
-    // 		- der Pointer auf rNode muss mit 'delete' freigegeben werden!
 
-	
 	std::list<Edge*>::iterator edgeIt;
 	edgeIt = m_edges.begin();
-	//alle edges loschen die mit rNode verbunden sind
+	//delete and remove all edges attached to rNode
 	while (edgeIt != m_edges.end()) {
 		if ((*edgeIt)->isConnectedTo(rNode)) {
 			delete *edgeIt;
@@ -139,6 +104,7 @@ void Graph::remove(Node& rNode)
 		}
 	}
 
+	//remove node from m_nodes
 	std::list<Node*>::iterator nodeIt;
 	nodeIt = m_nodes.begin();
 	while (nodeIt != m_nodes.end()) {
@@ -149,10 +115,7 @@ void Graph::remove(Node& rNode)
 			nodeIt++;
 		}
 	}
-    // TEST:
-    // Testen Sie die Funktion, indem Sie indem Sie einen Graph mit ein paar Nodes und Edges in main.cpp erstellen
-    // und anschließend einzelne Nodes wieder löschen.
-    // Testen Sie mit der Funktion 'findNode', ob die gelöschten Nodes noch im Graph vorhanden sind.
+
 }
 
 
@@ -160,23 +123,16 @@ void Graph::remove(Node& rNode)
 
 void Graph::remove(Edge& rEdge)
 {
-    // - der Pointer auf rEdge muss aus m_edges entfernt werden!
-    // - der Pointer auf rEdge muss mit 'delete' freigegeben werden!
 	std::list<Edge*>::iterator edgeIt;
 
+	//find and delete edge
 	for (edgeIt = m_edges.begin(); edgeIt != m_edges.end(); edgeIt++) {
 
 		if ( *(edgeIt) == &rEdge ) {
-			//edge loeschen
 			 delete *edgeIt;
 			 edgeIt = m_edges.erase(edgeIt);
 		}
 	}
-
-    // TEST:
-    // Testen Sie die Funktion, indem Sie indem Sie einen Graph mit ein paar Nodes und Edges in main.cpp erstellen
-    // und anschließend einzelne Edges wieder löschen.
-    // Testen Sie mit der Funktion 'findEdges', ob die gelöschten Edges noch im Graph vorhanden sind.
 }
 
 
@@ -185,13 +141,10 @@ void Graph::remove(Edge& rEdge)
 std::vector<Edge*> Graph::findEdges(const Node& rSrc, const Node& rDst)
 {
     std::vector<Edge*> ret;
-
-    // - findet alle edges, mit rSrc als Source-Node und rDst als Destination-Node.
-    // - füge die Zeiger der Edges in den vector 'ret' ein.
 	
 	std::list<Edge*>::iterator edgeIt = m_edges.begin();
 
-	
+	//finds all edges with rSrc as source node AND rDst as destination node and adds them to ret
 	while (edgeIt != m_edges.end()) {
 		if ( ( &((*edgeIt)->getSrcNode()) == &rSrc ) && ( &((*edgeIt)->getDstNode()) == &rDst ) ) {
 			ret.push_back(*edgeIt);
@@ -200,17 +153,13 @@ std::vector<Edge*> Graph::findEdges(const Node& rSrc, const Node& rDst)
 	}
 	
 	return ret;
-    // TEST:
-    // Testen Sie die Funktion, indem Sie indem Sie einen Graph mit ein paar Nodes und Edges in main.cpp erstellen
-    // und anschließend ein paar Edges im Graph suchen.
-    // Prüfen Sie, ob Edges gefunden wurden und geben Sie die gefunden Edges auf der Kommandozeile aus!
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 
 void Graph::findShortestPathDijkstra(std::deque<Edge*>& rPath, const Node& rSrcNode, const Node& rDstNode)
 {
-	//Quelle: https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm)
+	//Source: https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm)
 	
 	//lists to keep track of visited and unvisited nodes
 	std::list<Node*> visited;
@@ -242,7 +191,7 @@ void Graph::findShortestPathDijkstra(std::deque<Edge*>& rPath, const Node& rSrcN
 
 		//finds node with smallest distance in distances map and sets currentNode to it
 		for (auto it = distances.begin(); it != distances.end(); it++) {
-			//if the distance to the iterator node is smaller than the current node, and it is a member of unvisited
+			//if the distance to the iterator node is smaller than the current node, and it is a member of unvisited make it our currentNode
 			if (it->second < distances[currentNode] && std::find(unvisited.begin(), unvisited.end(), it->first) != unvisited.end()) {
 				currentNode = it->first;
 			}
@@ -251,7 +200,7 @@ void Graph::findShortestPathDijkstra(std::deque<Edge*>& rPath, const Node& rSrcN
 		for (auto edgeIt = m_edges.begin(); edgeIt != m_edges.end(); edgeIt++) {
 			//finds all edges where the source node is our currentNode
 			if ((*edgeIt)->isConnectedTo(*currentNode) && &((*edgeIt)->getSrcNode()) == &(*currentNode)) {
-				//if the distance of currentNode + edgeweight is smaller than the distance of the destination node, update its distance
+				//if the distance of currentNode + edgeweight is smaller than the distance of the destination node, update its distance and make its previousNode our currentNode
 				if (distances[currentNode] + (*edgeIt)->getWeight() < distances[&((*edgeIt)->getDstNode())] ) {
 					distances[&((*edgeIt)->getDstNode())] = distances[currentNode] + (*edgeIt)->getWeight();
 					previousNode[&((*edgeIt)->getDstNode())] = currentNode;
@@ -302,7 +251,7 @@ void Graph::findShortestPathDijkstra(std::deque<Edge*>& rPath, const Node& rSrcN
 			}
 
 
-			//add edge to path
+			//add edge to path (input deque)
 			rPath.push_back(currentEdge);
 		}
 	}

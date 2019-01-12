@@ -9,11 +9,6 @@ Edge::Edge(Node& rSrc, Node& rDst) : m_rSrc(rSrc), m_rDst(rDst)
 	rSrc.getOutEdges().push_back(this);
     // fügt die Edge (this) in m_incomingEdges des Destination-Node ein.
 	rDst.getInEdges().push_back(this);
-    // Hinweis: die Funktionen Node::getOutEdges() und Node::getInEdges() verwenden!
-
-    // TEST:
-    // Erstellen Sie in main.cpp eine Edge und prüfen Sie, ob die Edge
-    // korrekt in m_outgoingEdges bzw. m_incomingEdges eingefügt wurde!
 }
 
 
@@ -22,6 +17,8 @@ Edge::Edge(Node& rSrc, Node& rDst) : m_rSrc(rSrc), m_rDst(rDst)
 Edge::Edge(const Edge& rOther) : m_rSrc(rOther.m_rSrc), m_rDst(rOther.m_rDst)
 {
     // macht das Selbe wie 'Edge(Node& rSrc, Node& rDst)'
+	m_rSrc.getOutEdges().push_back(this);
+	m_rDst.getInEdges().push_back(this);
 }
 
 
@@ -33,12 +30,6 @@ Edge::~Edge()
 	m_rSrc.getOutEdges().remove(this);
     // - entfernt die Edge (this) aus m_incomingEdges im Destination-Node
 	m_rDst.getInEdges().remove(this);
-    // TEST:
-    // Erstellen Sie in main.cpp drei Edges, die jeweils den selben Source- und Destination-Node haben.
-    // Löschen Sie eine Edge wieder!
-    // Prüfen Sie, ob die gelöschte Edge aus m_outgoingEdges bzw. m_incomingEdges entfernt wurde!
-
-    // Hinweis: arbeiten Sie mit 'new' und 'delete'!
 }
 
 
@@ -53,7 +44,6 @@ bool Edge::isConnectedTo(const Node& rNode) const
 	else {
 		return false;
 	}
-    // Hinweis: Adressen vergleichen, um zu gucken, ob es wirklich das selbe Objekt ist!
 }
 
 
