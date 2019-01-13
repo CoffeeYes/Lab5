@@ -15,33 +15,46 @@ void UI::printTaxi(Taxi eingabe) {
 	std::cout << eingabe.getState() << std::endl;
 }
 
-void UI::chooseOption(Taxi &taxi1, Taxi &taxi2,Graph* inputGraph) {
+void UI::chooseOption(std::list<Taxi*> taxiList,Graph* inputGraph) {
 	int option = 0;
 	int taxiChoice = 0;
+	int taxiCounter = 1;
 	Taxi *usingTaxi;
 
-	//Taxi auswaehlen
-	std::cout << "Welches Taxi Moechten sie nehmen? (1: " << taxi1.getName() << " / 2 : " << taxi2.getName() << ")\n";
+	//print all taxis in the list to the screen
+	std::cout << "Welches taxi moechten sie nehmen?\n";
+	for (auto taxiIt = taxiList.begin(); taxiIt != taxiList.end(); taxiIt++) {
+		std::cout << taxiCounter << ". " << (*taxiIt)->getName() << "\n";
+		taxiCounter++;
+	}
 	std::cin >> taxiChoice;
 
-	//fehler ueberpruefung
-	while (taxiChoice != 1 && taxiChoice != 2 || !taxiChoice) {
-		//eingabe loeschen falls kein integer eingegeben wurde, um unendliche schleife zu vermeiden.
+	//if an invalid entry was made clear the entry and reprint the list 
+	while ( !(taxiChoice <= taxiList.size() && taxiChoice > 0)) {
+		//clear the input 
 		std::cin.clear();
 		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-		//wiederholte eingabe
-		std::cout << "Sie haben keine zulaessige eingabe eingegeben, bitte geben sie 1 oder 2 ein\n\n";
-		std::cout << "Welches Taxi Moechten sie nehmen? (1/2):\n";
+		//display options again and allow new input
+		std::cout << "\nSie haben keine zulaessige eingabe gemacht,versuchen sie es erneut : \n\n";
+		taxiChoice = 0;
+		taxiCounter = 1;
+		for (auto taxiIt = taxiList.begin(); taxiIt != taxiList.end(); taxiIt++) {
+			std::cout << taxiCounter << ". " << (*taxiIt)->getName() << "\n";
+			taxiCounter++;
+		}
 		std::cin >> taxiChoice;
 	}
 
-	//taxi pointer je nach auswahl setzen
-	if (taxiChoice == 1) {
-		usingTaxi = &taxi1;
+	//iterate through taxilist until we find the taxi that was chosen by the user
+	int taxiChoiceCounter = 1;
+	auto taxiChoiceIt = taxiList.begin();
+
+	while (taxiChoiceCounter != taxiChoice) {
+		taxiChoiceCounter++;
+		taxiChoiceIt++;
 	}
-	else {
-		usingTaxi = &taxi2;
-	}
+	//set the found taxi as the taxi being used
+	usingTaxi = *taxiChoiceIt;
 
 	//option auswaehlen
 	std::cout << "Was Moechten sie tun? : \n\n" << "1.Fahrt mit Gast buchen\n2.Fahrt ohne gast buchen\n3.Tanken\n4.Taxi Status anzeigen\n5.Programm beenden\n\n";
@@ -277,9 +290,12 @@ void UI::chooseOption(Taxi &taxi1, Taxi &taxi2,Graph* inputGraph) {
 		break;
 	//programm beenden
 	case 5:
+		//delete all taxis 
+		for (auto it = taxiList.begin(); it != taxiList.end(); it++) {
+			delete *it;
+			it = taxiList.erase(it);
+		}
 		exit(0);
-		delete &taxi1;
-		delete &taxi2;
 		break;
 	default:
 		break;
