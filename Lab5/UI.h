@@ -11,6 +11,6 @@ public:
 	UI();
 	~UI();
 	void printTaxi(Taxi eingabe);
-	void chooseOption(Taxi &taxi, Taxi &taxi2,Graph inputGraph);
+	void chooseOption(Taxi &taxi, Taxi &taxi2,Graph* inputGraph);
 };
 

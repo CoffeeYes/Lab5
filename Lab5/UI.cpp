@@ -15,7 +15,7 @@ void UI::printTaxi(Taxi eingabe) {
 	std::cout << eingabe.getState() << std::endl;
 }
 
-void UI::chooseOption(Taxi &taxi1, Taxi &taxi2,Graph inputGraph) {
+void UI::chooseOption(Taxi &taxi1, Taxi &taxi2,Graph* inputGraph) {
 	int option = 0;
 	int taxiChoice = 0;
 	Taxi *usingTaxi;
@@ -73,7 +73,7 @@ void UI::chooseOption(Taxi &taxi1, Taxi &taxi2,Graph inputGraph) {
 		//allow user to choose starting node from list
 		std::cout << "wo fangen sie an? \n\n";
 		choiceCounter = 1;
-		std::list<Node*> nodeList = inputGraph.getNodes();
+		std::list<Node*> nodeList = inputGraph->getNodes();
 		for (auto it = nodeList.begin(); it != nodeList.end(); it++) {
 			std::cout << choiceCounter << "." << (*it)->getID() << "\n";
 			choiceCounter++;
@@ -143,7 +143,7 @@ void UI::chooseOption(Taxi &taxi1, Taxi &taxi2,Graph inputGraph) {
 
 		//find shortest path and save it
 		std::deque<Edge*> path;
-		inputGraph.findShortestPathDijkstra(path, *sourceNode, *destNode);
+		inputGraph->findShortestPathDijkstra(path, *sourceNode, *destNode);
 
 		if (path.size() >= 1) {
 			//output path and calculate distanz travelled
@@ -171,7 +171,7 @@ void UI::chooseOption(Taxi &taxi1, Taxi &taxi2,Graph inputGraph) {
 		int sourceChoice;
 		int destChoice;
 		int choiceCounter;
-		std::list<Node*> nodeList = inputGraph.getNodes();
+		std::list<Node*> nodeList = inputGraph->getNodes();
 
 		//allow user to choose starting node from list
 		std::cout << "wo fangen sie an? \n\n";
@@ -244,7 +244,7 @@ void UI::chooseOption(Taxi &taxi1, Taxi &taxi2,Graph inputGraph) {
 
 		//find shortest path and save it
 		std::deque<Edge*> path;
-		inputGraph.findShortestPathDijkstra(path, *sourceNode, *destNode);
+		inputGraph->findShortestPathDijkstra(path, *sourceNode, *destNode);
 
 		//if a path was found
 		if (path.size() >= 1) {

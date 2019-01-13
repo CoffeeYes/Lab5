@@ -72,6 +72,7 @@ Graph::~Graph()
 	
     // - soll alle Edges im Graph löschen (delete)
 	while (!m_edges.empty()) {
+		delete m_edges.front();
 		m_edges.pop_front();
 	}
 
